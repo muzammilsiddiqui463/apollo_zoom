@@ -155,7 +155,7 @@ def main():
         return
 
     try:
-        input_file = os.getcwd()+r"/input.csv"
+        input_file = os.getcwd()+r"/input/input.csv"
         df = pd.read_csv(input_file)
         df.fillna("", inplace=True)
         print(df, "\n")
