@@ -6,6 +6,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
+import undetected_chromedriver as uc
 import os
 import io
 import json
@@ -98,7 +99,7 @@ def main():
 
     # Create a new instance of ChromeDriver with the desired options
     try:
-        driver = webdriver.Chrome(options=chrome_options)
+        driver = uc.Chrome(options=chrome_options)
     except Exception as e:
         print("Error occurred while initializing WebDriver:", e)
         return
