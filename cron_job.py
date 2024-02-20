@@ -720,8 +720,8 @@ def main():
 
                 take_break()
             last_processed_index = x + 1  # Update the last processed index
-            last_processed_page = 0
-            last_processed_person = 0
+            last_processed_page = 1
+            last_processed_person = -1
             update_last_processed_index("settings.json",last_processed_index)
             update_last_processed_page("settings.json",last_processed_page)
             update_last_processed_person("settings.json",last_processed_person)
