@@ -154,7 +154,7 @@ def main():
         return
 
     try:
-        input_file = "input.csv"
+        input_file = os.getcwd()+r"/input.csv"
         df = pd.read_csv(input_file)
         df.fillna("", inplace=True)
         print(df, "\n")
@@ -662,7 +662,7 @@ def main():
                             company_info['Company Street'] = address.split(", ")[0]
                     except:pass
 
-                    csv_file_path = f"{os.getcwd()}/output_apollo.csv"
+                    csv_file_path = f"{os.getcwd()}/output/output_apollo.csv"
 
                     # Check if the file exists and is empty
                     if os.path.exists(csv_file_path) == False:
@@ -676,7 +676,7 @@ def main():
                         writer = csv.DictWriter(csvfile, fieldnames=data.keys())
                         writer.writerow(data)
 
-                    csv_file_path = f"{os.getcwd()}/output_apollo_company.csv"
+                    csv_file_path = f"{os.getcwd()}/output/output_apollo_company.csv"
 
                     # Check if the file exists and is empty
                     if os.path.exists(csv_file_path)==False:
@@ -746,7 +746,7 @@ def main():
 
     if last_processed_index == len(df):
         print("search completed!")
-        export_to_file(df, "output_apollo.csv")
+        # export_to_file(df, "output/output_apollo.csv")
         print(f"current time : {datetime.now().strftime('%H:%M:%S')}")
 
     driver.quit()
