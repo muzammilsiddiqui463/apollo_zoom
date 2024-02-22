@@ -799,7 +799,7 @@ def is_weekday():
 if __name__ == "__main__":
     print("Program started...")
     # is_weekday()
-    schedule.every().day.at("06:10").do(is_weekday)
+    schedule.every().day.at("06:25").do(is_weekday)
 
     # Main loop
     while True:
