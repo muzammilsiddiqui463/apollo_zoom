@@ -420,7 +420,10 @@ def main():
 
                 complete_url = base_url+f"page={last_processed_page}"+filter_url
                 print(f"Filtered url is {complete_url}")
-                driver.get(complete_url)
+                try:
+                    driver.get(complete_url)
+                except:
+                    return main()
                 random_sleep()
 
                 #scrape all links from table
@@ -434,7 +437,10 @@ def main():
                     print(count)
                     last_processed_person = count
                     update_last_processed_person("settings.json",last_processed_person)
-                    driver.get(lead)
+                    try:
+                        driver.get(lead)
+                    except:
+                        return main()
                     random_sleep()
                     #person name
                     ename = driver.find_element(
@@ -798,9 +804,9 @@ def is_weekday():
 
 if __name__ == "__main__":
     print("Program started...")
-    # is_weekday()
-    schedule.every().day.at("06:25").do(is_weekday)
-
-    # Main loop
-    while True:
-        schedule.run_pending()
+    is_weekday()
+    # schedule.every().day.at("06:25").do(is_weekday)
+    #
+    # # Main loop
+    # while True:
+    #     schedule.run_pending()
