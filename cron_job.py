@@ -15,6 +15,7 @@ import json
 last_processed_index = 0
 last_processed_page = 1
 last_processed_person = -1
+
 run_code = False
 start_time = ""
 def read_json_values(json_file):
@@ -747,6 +748,9 @@ def main():
 
     if last_processed_index == len(df):
         print("search completed!")
+        update_last_processed_index("settings.json",0)
+        update_last_processed_person("settings.json",-1)
+        update_last_processed_page("settings.json", 1)
         # export_to_file(df, "output/output_apollo.csv")
         print(f"current time : {datetime.now().strftime('%H:%M:%S')}")
 
