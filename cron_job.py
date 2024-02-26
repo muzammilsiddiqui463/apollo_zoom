@@ -426,10 +426,13 @@ def main():
                     return main()
                 random_sleep()
 
-                #scrape all links from table
-                all_links = driver.find_elements(
-                    By.XPATH, '//div[@class="zp_xVJ20"]//a'
-                )
+                try:
+                    #scrape all links from table
+                    all_links = driver.find_elements(
+                        By.XPATH, '//div[@class="zp_xVJ20"]//a'
+                    )
+                except:
+                    return main()
                 for l in range(0,len(all_links)):
                     all_links[l] = all_links[l].get_attribute("href")
                 print(len(all_links))
