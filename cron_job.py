@@ -715,6 +715,7 @@ def main():
                         break
 
                     take_break()
+
                 last_processed_page = page+1
                 update_last_processed_page("settings.json", last_processed_page)
 
@@ -783,9 +784,9 @@ def start_code():
 def stop_code():
     global run_code
     current_time = datetime.now()
-    if current_time.hour >= 16 and current_time.hour <= 17 and current_time.minute >= 30:
-        run_code = False
-        return True
+    # if current_time.hour >= 16 and current_time.hour <= 17 and current_time.minute >= 30:
+    #     run_code = False
+    #     return True
 
     return False
 
