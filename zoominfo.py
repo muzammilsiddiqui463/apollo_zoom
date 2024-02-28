@@ -848,6 +848,10 @@ def main():
 
     if last_processed_index == len(df):
         print("search completed!")
+        update_last_processed_index("settings_zoominfo.json", 0)
+        update_last_processed_person("settings_zoominfo.json", -1)
+        update_last_processed_page("settings_zoominfo.json", 1)
+        update_last_page_url("settings_zoominfo.json", None)
         export_to_file(df, "output_zoominfo.csv")
         print(f"current time : {datetime.now().strftime('%H:%M:%S')}")
 
