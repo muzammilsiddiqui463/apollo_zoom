@@ -19,6 +19,7 @@ last_processed_person = -1
 
 run_code = False
 start_time = ""
+WEEKDAY = True
 def read_json_values(json_file):
     global last_processed_index,last_processed_page,last_processed_person
     with open(json_file, 'r') as file:
@@ -786,37 +787,47 @@ def start_code():
 
 # Function to check if it's time to stop the code
 def stop_code():
-    global run_code
+    global run_code,WEEKDAY
     current_time = datetime.now()
-    if current_time.hour >= 20 and current_time.minute >= 30:
-        run_code = False
-        return True
+    WEEKDAY = is_weekday()
+    if WEEKDAY == True:
+        if current_time.hour >= 20 and current_time.minute >= 30:
+            run_code = False
+            return True
+    else:
+        if current_time.hour >= 14 and current_time.minute >= 30:
+            run_code = False
+            return True
 
     return False
 
 
 # Function to check if today is a weekday
 def is_weekday():
+    global WEEKDAY
     today = datetime.today().weekday()
     # Monday is 0 and Sunday is 6
     if 0 <= today <= 4:
-        print("Starting code...")
-        start_code()
+
+        WEEKDAY = True
+        return True
     else:
-        print("Not week day!")
-        # start_code()
+
+        WEEKDAY = False
+        return False
 
 
 if __name__ == "__main__":
     print("Program started...")
-    # is_weekday()
-    # schedule.every().day.at("08:00").do(is_weekday)
 
-    # Main loop
-    # while True:
-    #     schedule.run_pending()
     while True:
         current_time = datetime.now().time()
-        if datetime_time(8, 30) <= current_time < datetime_time(20, 30):
-            is_weekday()
+        if is_weekday() == True:
+            if datetime_time(8, 30) <= current_time < datetime_time(20, 30):
+                print("Starting Code..")
+                start_code()
+        else:
+            if datetime_time(8, 30) <= current_time < datetime_time(14, 30):
+                print("Starting code...")
+                start_code()
         time.sleep(1)
