@@ -180,7 +180,7 @@ def main():
         return
 
     try:
-        input_file = "input.csv"
+        input_file = "input/input.csv"
         df = pd.read_csv(input_file)
         df.fillna("", inplace=True)
         # print(df, "\n")
@@ -734,7 +734,7 @@ def main():
                         except:
                             pass
 
-                        csv_file_path = f"{os.getcwd()}/output_zoominfo.csv"
+                        csv_file_path = f"{os.getcwd()}/output/output_zoominfo.csv"
 
                         # Check if the file exists and is empty
                         if os.path.exists(csv_file_path) == False:
@@ -750,7 +750,7 @@ def main():
                             writer = csv.DictWriter(csvfile, fieldnames=data.keys())
                             writer.writerow(data)
 
-                        csv_file_path = f"{os.getcwd()}/output_zoominfo_company.csv"
+                        csv_file_path = f"{os.getcwd()}/output/output_zoominfo_company.csv"
 
                         # Check if the file exists and is empty
                         if os.path.exists(csv_file_path) == False:
@@ -852,7 +852,7 @@ def main():
         update_last_processed_person("settings_zoominfo.json", -1)
         update_last_processed_page("settings_zoominfo.json", 1)
         update_last_page_url("settings_zoominfo.json", None)
-        export_to_file(df, "output_zoominfo.csv")
+        # export_to_file(df, os.getcwd()+"/output/output_zoominfo.csv")
         print(f"current time : {datetime.now().strftime('%H:%M:%S')}")
 
     driver.quit()
