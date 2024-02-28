@@ -1,5 +1,6 @@
 import csv, time, random, pandas as pd, schedule
 from datetime import datetime, timedelta
+from datetime import time as datetime_time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -808,9 +809,14 @@ def is_weekday():
 
 if __name__ == "__main__":
     print("Program started...")
-    is_weekday()
-    # schedule.every().day.at("06:25").do(is_weekday)
-    #
-    # # Main loop
+    # is_weekday()
+    # schedule.every().day.at("08:00").do(is_weekday)
+
+    # Main loop
     # while True:
     #     schedule.run_pending()
+    while True:
+        current_time = datetime.now().time()
+        if datetime_time(8, 30) <= current_time < datetime_time(20, 30):
+            is_weekday()
+        time.sleep(1)
