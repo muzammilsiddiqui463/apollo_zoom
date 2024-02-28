@@ -788,9 +788,9 @@ def start_code():
 def stop_code():
     global run_code
     current_time = datetime.now()
-    # if current_time.hour >= 16 and current_time.hour <= 17 and current_time.minute >= 30:
-    #     run_code = False
-    #     return True
+    if current_time.hour >= 20 and current_time.minute >= 30:
+        run_code = False
+        return True
 
     return False
 
