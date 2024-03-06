@@ -11,6 +11,10 @@ from selenium.webdriver.common.action_chains import ActionChains
 import os
 import io
 import json
+from input import state_expansion
+
+# state_expansion.expand()
+
 # Global variables to maintain state
 last_processed_index = 0
 last_processed_page = 5
@@ -182,7 +186,7 @@ def main():
         return
 
     try:
-        input_file = "input/input.csv"
+        input_file = "input/expanded_input.csv"
         df = pd.read_csv(input_file)
         df.fillna("", inplace=True)
         # print(df, "\n")
@@ -192,67 +196,7 @@ def main():
         return
 
     for x in range(last_processed_index, len(df)):
-        company_info = {
-            "Company": "",
-            "# Employees": "",
-            "Annual Revenue": "",
-            "Company Address": "",
-            "Company City": "",
-            "Company Country": "",
-            "Company Linkedin Url": "",
-            "Company Name for Emails": "",
-            "Company Phone": "",
-            "Company Postal Code": "",
-            "Company State": "",
-            "Company Street": "",
-            "Facebook Url": "",
-            "Founded Year": "",
-            "Industry": "",
-            "Keywords": "",
-            "Last Raised At": "",
-            "Latest Funding": "",
-            "Latest Funding Amount": "",
-            "Logo Url": "",
-            "Number of Retail Locations": "",
-            "Primary Intent Score": "",
-            "Primary Intent Topic": "",
-            "Secondary Intent Score": "",
-            "Secondary Intent Topic": "",
-            "SEO Description": "",
-            "Short Description": "",
-            "SIC Codes": "",
-            "Technologies": "",
-            "Total Funding": "",
-            "Twitter Url": "",
-            "Website": "",
-            "Website_txt_use": "",
-        }
-
-        data = {
-            "First Name": "",
-            "Last Name": "",
-            "Title": "",
-            "Company": "",
-            "Company Name for Emails": "",
-            "Email": "",
-            "Email Status": "Valid",
-            "No of Employees": "",
-            "Seniority": "",
-            "Departments": "",
-            "Corporate Phone": "",
-            "Personal Phone": "",
-            "Industry": "",
-            "Keywords": "",
-            "Person Linkedin Url": "",
-            "Website": "",
-            "Company Linkedin Url": "",
-            "Facebook Url": "",
-            "Twitter Url": "",
-            "City": "",
-            "State": "",
-            "Country": "",
-            "Company Description": "",
-        }
+        
 
         if run_code:
             first_name = df["First Name"][x]
@@ -449,16 +393,83 @@ def main():
                 random_sleep()
             last_processed_page = last_processed_page
             update_last_processed_page("settings_zoominfo.json", last_processed_page)
-            for page in range(last_processed_page,20):
+            for page in range(last_processed_page,100):
                 listofNames = driver.find_elements(By.XPATH, "//table//tbody//tr")
                 print(len(listofNames))
                 all_links = driver.find_elements("xpath","//a[@data-automation-id='contact-column-contact-name']")
                 for l in range(0, len(all_links)):
                     all_links[l] = all_links[l].get_attribute("href")
+                if len(all_links)==0:
+                    last_processed_page = 1
+                    last_processed_person = -1
+                    update_last_processed_page("settings_zoominfo.json", last_processed_page)
+                    update_last_processed_person("settings_zoominfo.json", last_processed_person)
+                    break
                 last_page_url = driver.current_url
                 update_last_page_url("settings_zoominfo.json",last_page_url)
                 for count,lead in enumerate(all_links,last_processed_person+1):
                     print(count)
+                    company_info = {
+                        "Company": "",
+                        "# Employees": "",
+                        "Annual Revenue": "",
+                        "Company Address": "",
+                        "Company City": "",
+                        "Company Country": "",
+                        "Company Linkedin Url": "",
+                        "Company Name for Emails": "",
+                        "Company Phone": "",
+                        "Company Postal Code": "",
+                        "Company State": "",
+                        "Company Street": "",
+                        "Facebook Url": "",
+                        "Founded Year": "",
+                        "Industry": "",
+                        "Keywords": "",
+                        "Last Raised At": "",
+                        "Latest Funding": "",
+                        "Latest Funding Amount": "",
+                        "Logo Url": "",
+                        "Number of Retail Locations": "",
+                        "Primary Intent Score": "",
+                        "Primary Intent Topic": "",
+                        "Secondary Intent Score": "",
+                        "Secondary Intent Topic": "",
+                        "SEO Description": "",
+                        "Short Description": "",
+                        "SIC Codes": "",
+                        "Technologies": "",
+                        "Total Funding": "",
+                        "Twitter Url": "",
+                        "Website": "",
+                        "Website_txt_use": "",
+                    }
+
+                    data = {
+                        "First Name": "",
+                        "Last Name": "",
+                        "Title": "",
+                        "Company": "",
+                        "Company Name for Emails": "",
+                        "Email": "",
+                        "Email Status": "Valid",
+                        "No of Employees": "",
+                        "Seniority": "",
+                        "Departments": "",
+                        "Corporate Phone": "",
+                        "Personal Phone": "",
+                        "Industry": "",
+                        "Keywords": "",
+                        "Person Linkedin Url": "",
+                        "Website": "",
+                        "Company Linkedin Url": "",
+                        "Facebook Url": "",
+                        "Twitter Url": "",
+                        "City": "",
+                        "State": "",
+                        "Country": "",
+                        "Company Description": "",
+                    }
                     last_processed_person = count
                     update_last_processed_person("settings_zoominfo.json", last_processed_person)
                     try:
@@ -914,7 +925,7 @@ if __name__ == "__main__":
     while True:
         current_time = datetime.now().time()
         if is_weekday() == True:
-            if datetime_time(8, 30) <= current_time < datetime_time(20, 30):
+            if datetime_time(5, 15) <= current_time < datetime_time(20, 30):
                 print("Starting Code..")
                 start_code()
         else:
