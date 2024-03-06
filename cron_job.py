@@ -11,6 +11,9 @@ import undetected_chromedriver as uc
 import os
 import io
 import json
+from input import state_expansion
+
+state_expansion.expand()
 
 # Global variables to maintain state
 last_processed_index = 0
@@ -97,7 +100,7 @@ def main():
     # assign a common user agent
     my_user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36"
     chrome_options.add_argument(f"user-agent={my_user_agent}")
-    chrome_options.add_argument("--headless")
+    # chrome_options.add_argument("--headless")
     chrome_options.add_argument("--window-size=1920,1080")
 
     # Create a new instance of ChromeDriver with the desired options
@@ -158,7 +161,7 @@ def main():
         return
 
     try:
-        input_file = os.getcwd()+r"/input/input.csv"
+        input_file = os.getcwd()+r"/input/expanded_input.csv"
         df = pd.read_csv(input_file)
         df.fillna("", inplace=True)
         print(df, "\n")
@@ -169,67 +172,7 @@ def main():
 
     read_json_values("settings.json")
     for x in range(last_processed_index, len(df)):
-        company_info = {
-            "Company": "",
-            "# Employees": "",
-            "Annual Revenue": "",
-            "Company Address": "",
-            "Company City": "",
-            "Company Country": "",
-            "Company Linkedin Url": "",
-            "Company Name for Emails": "",
-            "Company Phone": "",
-            "Company Postal Code": "",
-            "Company State": "",
-            "Company Street": "",
-            "Facebook Url": "",
-            "Founded Year": "",
-            "Industry": "",
-            "Keywords": "",
-            "Last Raised At": "",
-            "Latest Funding": "",
-            "Latest Funding Amount": "",
-            "Logo Url": "",
-            "Number of Retail Locations": "",
-            "Primary Intent Score": "",
-            "Primary Intent Topic": "",
-            "Secondary Intent Score": "",
-            "Secondary Intent Topic": "",
-            "SEO Description": "",
-            "Short Description": "",
-            "SIC Codes": "",
-            "Technologies": "",
-            "Total Funding": "",
-            "Twitter Url": "",
-            "Website": "",
-            "Website_txt_use": ""
-        }
 
-        data = {
-            "First Name": "",
-            "Last Name": "",
-            "Title": "",
-            "Company": "",
-            "Company Name for Emails": "",
-            "Email": "",
-            "Email Status": "Valid",
-            "No of Employees": "",
-            "Seniority": "",
-            "Departments": "",
-            "Corporate Phone": "",
-            "Personal Phone": "",
-            "Industry": "",
-            "Keywords": "",
-            "Person Linkedin Url": "",
-            "Website": "",
-            "Company Linkedin Url": "",
-            "Facebook Url": "",
-            "Twitter Url": "",
-            "City": "",
-            "State": "",
-            "Country": "",
-            "Company Description": "",
-        }
         if run_code:
             first_name = df["First Name"][x]
             last_name = df["Last Name"][x]
@@ -418,7 +361,7 @@ def main():
             base_url,filter_url = complete_url.split("page=1")
             last_processed_page = last_processed_page
             update_last_processed_page("settings.json",last_processed_page)
-            for page in range(last_processed_page,20):
+            for page in range(last_processed_page,99):
 
                 complete_url = base_url+f"page={last_processed_page}"+filter_url
                 print(f"Filtered url is {complete_url}")
@@ -438,8 +381,74 @@ def main():
                 for l in range(0,len(all_links)):
                     all_links[l] = all_links[l].get_attribute("href")
                 print(len(all_links))
+                if len(all_links)==0:
+                    last_processed_page = 1
+                    last_processed_person = -1
+                    update_last_processed_page("settings.json", last_processed_page)
+                    update_last_processed_person("settings.json", last_processed_person)
+                    break
                 for count,lead in enumerate(all_links,last_processed_person+1):
                     print(count)
+                    company_info = {
+                        "Company": "",
+                        "# Employees": "",
+                        "Annual Revenue": "",
+                        "Company Address": "",
+                        "Company City": "",
+                        "Company Country": "",
+                        "Company Linkedin Url": "",
+                        "Company Name for Emails": "",
+                        "Company Phone": "",
+                        "Company Postal Code": "",
+                        "Company State": "",
+                        "Company Street": "",
+                        "Facebook Url": "",
+                        "Founded Year": "",
+                        "Industry": "",
+                        "Keywords": "",
+                        "Last Raised At": "",
+                        "Latest Funding": "",
+                        "Latest Funding Amount": "",
+                        "Logo Url": "",
+                        "Number of Retail Locations": "",
+                        "Primary Intent Score": "",
+                        "Primary Intent Topic": "",
+                        "Secondary Intent Score": "",
+                        "Secondary Intent Topic": "",
+                        "SEO Description": "",
+                        "Short Description": "",
+                        "SIC Codes": "",
+                        "Technologies": "",
+                        "Total Funding": "",
+                        "Twitter Url": "",
+                        "Website": "",
+                        "Website_txt_use": ""
+                    }
+                    data = {
+                        "First Name": "",
+                        "Last Name": "",
+                        "Title": "",
+                        "Company": "",
+                        "Company Name for Emails": "",
+                        "Email": "",
+                        "Email Status": "Valid",
+                        "No of Employees": "",
+                        "Seniority": "",
+                        "Departments": "",
+                        "Corporate Phone": "",
+                        "Personal Phone": "",
+                        "Industry": "",
+                        "Keywords": "",
+                        "Person Linkedin Url": "",
+                        "Website": "",
+                        "Company Linkedin Url": "",
+                        "Facebook Url": "",
+                        "Twitter Url": "",
+                        "City": "",
+                        "State": "",
+                        "Country": "",
+                        "Company Description": "",
+                    }
                     last_processed_person = count
                     update_last_processed_person("settings.json",last_processed_person)
                     try:
@@ -823,7 +832,7 @@ if __name__ == "__main__":
     while True:
         current_time = datetime.now().time()
         if is_weekday() == True:
-            if datetime_time(8, 30) <= current_time < datetime_time(20, 30):
+            if datetime_time(8, 1) <= current_time < datetime_time(20, 30):
                 print("Starting Code..")
                 start_code()
         else:
