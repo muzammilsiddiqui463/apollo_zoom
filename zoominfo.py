@@ -893,11 +893,11 @@ def stop_code():
     current_time = datetime.now()
     WEEKDAY = is_weekday()
     if WEEKDAY == True:
-        if current_time.hour >= 20 and current_time.minute >= 30:
+        if current_time.hour >= 4 and current_time.minute >= 55:
             run_code = False
             return True
     else:
-        if current_time.hour >= 14 and current_time.minute >= 30:
+        if current_time.hour >= 8 and current_time.minute >= 25:
             run_code = False
             return True
 
@@ -925,11 +925,15 @@ if __name__ == "__main__":
     while True:
         current_time = datetime.now().time()
         if is_weekday() == True:
-            if datetime_time(5, 15) <= current_time < datetime_time(20, 30):
+            if datetime_time(20, 35) <= current_time:
+                if stop_code()==True:
+                    continue
                 print("Starting Code..")
                 start_code()
         else:
-            if datetime_time(8, 30) <= current_time < datetime_time(14, 30):
+            if datetime_time(14, 35) <= current_time:
+                if stop_code()==True:
+                    continue
                 print("Starting code...")
                 start_code()
         time.sleep(1)
