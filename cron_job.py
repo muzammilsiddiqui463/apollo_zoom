@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from datetime import time as datetime_time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
@@ -89,18 +90,17 @@ def take_break():
             start_time = datetime.now()
 
 def random_sleep():
-    time.sleep(random.randint(5, 10))
+    time.sleep(random.randint(4, 7))
 # Function to read the input file and for each record in the input file perform a search
 def main():
     global last_processed_index,last_processed_page, run_code,last_processed_person  # Access global state variables
-
     # Set up Chrome options
     chrome_options = webdriver.ChromeOptions()
 
     # assign a common user agent
     my_user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36"
     chrome_options.add_argument(f"user-agent={my_user_agent}")
-    chrome_options.add_argument("--headless")
+    # chrome_options.add_argument("--headless")
     chrome_options.add_argument("--window-size=1920,1080")
 
     # Create a new instance of ChromeDriver with the desired options
@@ -113,6 +113,8 @@ def main():
 
     # Create an ActionChains object
     action = ActionChains(driver)
+    wait = WebDriverWait(driver, 10)
+
 
     # Make a request to your target website.
     try:
@@ -215,7 +217,7 @@ def main():
                 except Exception as e:
                     print("Error occurred while searching by name:", e)
 
-            time.sleep(random.randint(3, 12))
+            time.sleep(random.randint(3, 7))
             if country:
                 try:
                     country_accordian = driver.find_element(
@@ -256,7 +258,7 @@ def main():
                 except Exception as e:
                     print("Error occurred while searching by country:", e)
 
-            time.sleep(random.randint(3, 12))
+            time.sleep(random.randint(3, 7))
 
             if title:
                 try:
@@ -290,7 +292,7 @@ def main():
                 except Exception as e:
                     print("Error occurred while searching by title:", e)
 
-            time.sleep(random.randint(3, 12))
+            time.sleep(random.randint(3, 7))
 
 
 
@@ -369,15 +371,13 @@ def main():
                     driver.get(complete_url)
                 except:
                     return main()
-                random_sleep()
+                time.sleep(1)
 
                 try:
                     #scrape all links from table
-                    all_links = driver.find_elements(
-                        By.XPATH, '//div[@class="zp_xVJ20"]//a'
-                    )
-                except:
-                    return main()
+                    all_links = wait.until(EC.presence_of_all_elements_located((By.XPATH, '//div[@class="zp_xVJ20"]//a')))
+                except Exception as e:
+                    all_links = []
                 for l in range(0,len(all_links)):
                     all_links[l] = all_links[l].get_attribute("href")
                 print(len(all_links))
@@ -455,7 +455,8 @@ def main():
                         driver.get(lead)
                     except:
                         return main()
-                    random_sleep()
+                    time.sleep(random.randrange(2,4))
+                    wait.until(EC.presence_of_element_located((By.XPATH, '//div[@class="zp_Ln9Ws EditTarget"]//span')))
                     #person name
                     ename = driver.find_element(
                         By.XPATH, '//div[@class="zp_Ln9Ws EditTarget"]//span'
@@ -495,9 +496,11 @@ def main():
                             access_button = driver.find_element("xpath","//div[contains(text(),'Access Email & Phone Number')]//parent::button")
                             access_button.click()
                             # random_sleep()
-                            time.sleep(random.randint(8, 13))
+                            time.sleep(random.randint(4, 6))
                         except:
                             pass
+                        wait.until(EC.presence_of_element_located((By.XPATH,
+                                                                   '//div[contains(text(),"Business")]/preceding-sibling::a[contains(text(),"@")]')))
                         email = driver.find_element("xpath","//div[contains(text(),'Business')]/preceding-sibling::a[contains(text(),'@')]").text
                         data['Email'] = email
                         try:
@@ -545,7 +548,7 @@ def main():
                         pass
 
                     try:
-                        company_phone_number = driver.find_element("xpath","//button//span[contains(text(),'(')]").text
+                        company_phone_number = wait.until(EC.presence_of_element_located((By.XPATH, '//button//span[contains(text(),"(")]'))).text
                         data['Corporate Phone'] = company_phone_number
                         company_info['Company Phone'] = company_phone_number
                     except:pass
@@ -616,7 +619,7 @@ def main():
                     #funding
                     try:
                         driver.find_element("xpath","//div[contains(text(),'Funding Rounds')]//parent::div/parent::a[@data-testid]").click()
-                        time.sleep(random.randint(4, 7))
+                        time.sleep(4)
                         funding = driver.find_element("xpath","//div[@class='zp_Nu4rb']/div//span").text
                         print([funding],"==funding")
                         latest_funding  = funding
@@ -638,7 +641,7 @@ def main():
                     try:
                         short = driver.find_element("xpath","//div[@class='zp_r2pH_']").text
                         driver.find_element("xpath","//div[@class='zp_r2pH_']//a").click()
-                        time.sleep(random.randint(3, 4))
+                        time.sleep(2)
                         long = driver.find_element("xpath","//div[@class='zp_r2pH_']").text
                         company_info['SEO Description'] = long
                         company_info['Short Description'] = short
@@ -650,7 +653,7 @@ def main():
                     try:
                         driver.find_element("xpath",
                                             "//div[contains(text(),'Technologies')]//parent::div/parent::a").click()
-                        time.sleep(random.randint(4, 6))
+                        time.sleep(3)
                         techs = driver.find_elements("xpath","//div[@class='zp_Nu4rb']//div[@class='zp_NbRbN']")
                         technologies = ""
                         for tech in techs:
@@ -671,7 +674,7 @@ def main():
                     #locations
                     try:
                         driver.find_element("xpath","//a[text()='Locations']").click()
-                        time.sleep(random.randint(5, 8))
+                        time.sleep(4)
                         stores = driver.find_elements("xpath","//div[@data-cy]//small")
                         company_info['Number of Retail Location'] = len(stores)
                         if len(stores)>0:
@@ -721,7 +724,7 @@ def main():
 
                     print(f"Data has been appended to {csv_file_path}")
                     # Take 3-12 seconds between searches mimic a lazy human
-                    time.sleep(random.randint(3, 12))
+                    time.sleep(random.randint(2, 4))
 
                     if stop_code():
                         print("shift end!")
