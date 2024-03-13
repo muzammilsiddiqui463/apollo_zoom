@@ -116,7 +116,7 @@ def main():
     chrome_options = webdriver.ChromeOptions()
 
 
-    # chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--headless")
     chrome_options.add_argument("--window-size=1920,1080")
     # Set up Chrome options
     driver = uc.Chrome(user_data_dir=os.getcwd()+"/zoominfo",options=chrome_options)
