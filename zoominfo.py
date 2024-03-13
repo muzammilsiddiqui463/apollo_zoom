@@ -106,7 +106,7 @@ def take_break():
 
 
 def random_sleep():
-    time.sleep(random.randint(7, 15))
+    time.sleep(random.randint(3, 6))
 
 
 # Function to read the input file and for each record in the input file perform a search
@@ -116,7 +116,7 @@ def main():
     chrome_options = webdriver.ChromeOptions()
 
 
-    chrome_options.add_argument("--headless")
+    # chrome_options.add_argument("--headless")
     chrome_options.add_argument("--window-size=1920,1080")
     # Set up Chrome options
     driver = uc.Chrome(user_data_dir=os.getcwd()+"/zoominfo",options=chrome_options)
@@ -150,15 +150,19 @@ def main():
 
             login_button = driver.find_element(By.XPATH, '//input[@id="okta-signin-submit"]')
             login_button.click()
-            time.sleep(5)
-            otp = input("Enter OTP:")
-            otp_box = driver.find_element(By.XPATH, '//input[@id="verify-code-input"]')
-            for i in otp:
-                otp_box.send_keys(i)
-                time.sleep(random.uniform(0.2, 0.8))
-            verify = driver.find_element(By.XPATH, '//button[@id="verify-btn"]')
-            verify.click()
-            time.sleep(5)
+            time.sleep(8)
+            try:
+                otp_box = driver.find_element(By.XPATH, '//input[@id="verify-code-input"]')
+                otp = input("Enter OTP:")
+
+                for i in otp:
+                    otp_box.send_keys(i)
+                    time.sleep(random.uniform(0.2, 0.8))
+                verify = driver.find_element(By.XPATH, '//button[@id="verify-btn"]')
+                verify.click()
+                time.sleep(5)
+            except:
+                pass
     except Exception as e:
         print("Error occurred while opening the website:", e)
         input("Please check...")
@@ -167,23 +171,23 @@ def main():
     action = ActionChains(driver)
 
     wait = WebDriverWait(driver, 20)
-    try:
-        wait.until(
-            EC.presence_of_element_located(
-                (
-                    By.XPATH,
-                    '//div[@class="application-header ng-star-inserted"]//button',
-                )
-            )
-        )
-        search_button = driver.find_element(
-            By.XPATH, '//div[@class="application-header ng-star-inserted"]//button'
-        )
-        search_button.click()
-    except Exception as e:
-        print("Error occurred while waiting for search element:", e)
-        driver.quit()
-        return
+    # try:
+    #     wait.until(
+    #         EC.presence_of_element_located(
+    #             (
+    #                 By.XPATH,
+    #                 '//div[@class="application-header ng-star-inserted"]//button',
+    #             )
+    #         )
+    #     )
+    #     search_button = driver.find_element(
+    #         By.XPATH, '//div[@class="application-header ng-star-inserted"]//button'
+    #     )
+    #     search_button.click()
+    # except Exception as e:
+    #     print("Error occurred while waiting for search element:", e)
+    #     driver.quit()
+    #     return
 
     try:
         input_file = "input/expanded_input.csv"
@@ -194,19 +198,39 @@ def main():
         print("Error occurred while reading csv file:", e)
         driver.quit()
         return
-
+    input()
     for x in range(last_processed_index, len(df)):
-        
+        try:
+            wait.until(
+                EC.presence_of_element_located(
+                    (
+                        By.XPATH,
+                        '//div[@class="application-header ng-star-inserted"]//button',
+                    )
+                )
+            )
+            search_button = driver.find_element(
+                By.XPATH, '//div[@class="application-header ng-star-inserted"]//button'
+            )
+            search_button.click()
+            WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, "//button[@id='btn-clear-all']"))
+            ).click()
 
+        except Exception as e:
+            pass
         if run_code:
             first_name = df["First Name"][x]
             last_name = df["Last Name"][x]
             title = df["Title"][x]
-            country = df["Country"][x]
+            country = df["Country"][x].split(", ")[0].strip()
             company = df["Company"][x]
             industry = df["Industry"][x]
             name = first_name + last_name
             print(f"Performing search for record: {df.iloc[x].to_dict()}")
+            # print(f"Getting page https://app.zoominfo.com/#/apps/searchV2/v2/saved ")
+            # driver.get("https://app.zoominfo.com/#/apps/searchV2/v2/saved")
+
             time.sleep(10)
             if name:
                 try:
@@ -218,13 +242,13 @@ def main():
                         EC.presence_of_element_located(
                             (
                                 By.XPATH,
-                                '//input[@id="fullName_1708103517812"]',
+                                '//input[contains(@id,"fullName_")]',
                             )
                         )
                     )
                     name_input = driver.find_element(
                         By.XPATH,
-                        '//input[@id="fullName_1708103517812"]',
+                        '//input[contains(@id,"fullName_")]',
                     )
                     time.sleep(random.randint(3, 5))
                     for i in name:
@@ -240,20 +264,21 @@ def main():
                 except Exception as e:
                     print("Error occurred while searching by name:", e)
 
-            time.sleep(random.randint(3, 12))
+            # time.sleep(random.randint(3, 12))
+            random_sleep()
             if country:
                 try:
                     country_accordian = driver.find_element(
                         By.XPATH, '//div[@id="locations"]'
                     )
                     action.move_to_element(country_accordian).click().perform()
-                    country_input = driver.find_element(
-                        By.XPATH,
-                        '//input[@data-automation-id="locations-filter-country-state-city-input"]',
-                    )
+                    time.sleep(1.5)
+                    country_input = WebDriverWait(driver, 10).until(
+                            EC.presence_of_element_located((By.XPATH, '//input[@data-automation-id="locations-filter-country-state-city-input"]'))
+                        )
                     action.scroll_to_element(country_input).perform()
                     action.move_to_element(country_input).click().perform()
-                    time.sleep(random.randint(3, 5))
+                    time.sleep(2)
                     # try:
                     #     ind = driver.find_element(
                     #         By.XPATH, '//div[@class="zp-select-indicators"]'
@@ -266,14 +291,14 @@ def main():
                         time.sleep(0.5)
                         country_input.send_keys(i)
                         # country_input.send_keys(Keys.ENTER)
-                    time.sleep(3)
-                    country_input.click()
                     time.sleep(2)
+                    country_input.click()
+                    time.sleep(1)
                     country_input.send_keys(Keys.ENTER)
                     time.sleep(2)
 
                     # action.move_to_element(country_input).send_keys(Keys.ENTER).perform()
-                    time.sleep(7)
+                    # time.sleep()
                     driver.find_element(
                         By.XPATH,
                         '//div[@id="locations"]//zic-button',
@@ -281,10 +306,12 @@ def main():
                 except Exception as e:
                     print("Error occurred while searching by country:", e)
 
-            time.sleep(random.randint(3, 12))
-
+            # time.sleep(random.randint(3, 12))
+            random_sleep()
             if title:
                 try:
+                    print(title)
+                    driver.save_screenshot("test.png")
                     title_accordian = driver.find_element(
                         By.XPATH, '//div[@id="currentRole"]'
                     )
@@ -301,22 +328,26 @@ def main():
                         By.XPATH,
                         '//input[@data-automation-id="currentRole-filter-jobTitle-input"]',
                     )
+                    action.scroll_to_element(title_input).perform()
+                    action.move_to_element(title_input).click().perform()
                     time.sleep(random.randint(3, 5))
+
                     for i in title:
                         time.sleep(0.5)
                         title_input.send_keys(i)
-                    time.sleep(3)
+                    time.sleep(1)
                     title_input.send_keys(Keys.ENTER)
-                    time.sleep(3)
+                    time.sleep(1)
                     driver.find_element(
                         By.XPATH,
                         '//div[@id="currentRole"]//zic-button',
                     ).click()
-                except Exception as e:
-                    print("Error occurred while searching by title:", e)
+                except:
+                    pass
+                    # print("Error occurred while searching by title:", e)
 
-            time.sleep(random.randint(3, 12))
-
+            # time.sleep(random.randint(3, 12))
+            random_sleep()
             if company:
                 try:
                     company_accordian = driver.find_element(
@@ -338,9 +369,9 @@ def main():
                     for i in company:
                         time.sleep(0.5)
                         company_input.send_keys(i)
-                    time.sleep(3)
+                    time.sleep(1)
                     company_input.send_keys(Keys.ENTER)
-                    time.sleep(3)
+                    time.sleep(1)
                     driver.find_element(
                         By.XPATH,
                         '//div[@id="companyNameUrlTicker"]//zic-button',
@@ -369,28 +400,28 @@ def main():
                     for i in industry:
                         time.sleep(0.5)
                         industry_input.send_keys(i)
-                    time.sleep(3)
+                    time.sleep(1)
                     industry_input.send_keys(Keys.ENTER)
-                    time.sleep(3)
+                    time.sleep(1)
                     driver.find_element(
                         By.XPATH,
                         '//div[@id="industry"]//zic-button',
                     ).click()
                 except Exception as e:
                     print("Error occurred while searching by industry:", e)
-            # random_sleep()
+            random_sleep()
             # scrape and make page number
             # input("--")
-            wait.until(
-                EC.presence_of_all_elements_located((By.XPATH, "//table//tbody//tr"))
-            )
+            # wait.until(
+            #     EC.presence_of_all_elements_located((By.XPATH, "//table//tbody//tr"))
+            # )
             pages = driver.find_elements(
                 By.XPATH, '//span[@class="p-paginator-pages ng-star-inserted"]//button'
             )
             #set page first
             if last_page_url!=None:
                 driver.get(last_page_url)
-                random_sleep()
+                time.sleep(5)
             last_processed_page = last_processed_page
             update_last_processed_page("settings_zoominfo.json", last_processed_page)
             for page in range(last_processed_page,100):
@@ -402,8 +433,10 @@ def main():
                 if len(all_links)==0:
                     last_processed_page = 1
                     last_processed_person = -1
+                    last_page_url = None
                     update_last_processed_page("settings_zoominfo.json", last_processed_page)
                     update_last_processed_person("settings_zoominfo.json", last_processed_person)
+                    update_last_page_url("settings_zoominfo.json",last_page_url)
                     break
                 last_page_url = driver.current_url
                 update_last_page_url("settings_zoominfo.json",last_page_url)
@@ -475,7 +508,7 @@ def main():
                     try:
                         driver.get(lead)
                     except:
-                        return main()
+                        pass
                     random_sleep()
                     try:
                         # wait.until(
@@ -492,9 +525,7 @@ def main():
                         # ).click()
                         # random_sleep()
                         # person name
-                        ename = driver.find_element(
-                            By.XPATH, '//div[@data-automation-id="person-name"]'
-                        ).text
+                        ename = wait.until(EC.presence_of_element_located((By.XPATH, '//div[@data-automation-id="person-name"]'))).text
                         try:
                             efname, elname = str(ename).split(" ")
                         except:
@@ -631,7 +662,7 @@ def main():
                                 "xpath", "//li[contains(@id,'Overview')]"
                             )
                             action.move_to_element(overview).click().perform()
-                            time.sleep(random.randrange(5,7))
+                            time.sleep(2)
                             company_industry = driver.find_elements(
                                 "xpath",
                                 "//div[contains(@aria-label,'Industry')]//zi-attribute-chip",
@@ -661,7 +692,7 @@ def main():
                         try:
                             k_e = driver.find_element("xpath","//li[@data-automation-id]//span[contains(text(),'Products & Services')]/parent::div/parent::div/parent::li")
                             action.move_to_element(k_e).click().perform()
-                            time.sleep(random.randrange(3,6))
+                            time.sleep(2)
                             keywords_elems = driver.find_elements("xpath","//div[contains(@aria-label,'Products & Services')]//zi-attribute-chip")
                             keywords=""
                             for kwd in keywords_elems:
@@ -705,7 +736,7 @@ def main():
                             driver.find_element(
                                 "xpath", '//div[@aria-label="Show more description"]//span'
                             ).click()
-                            random_sleep()
+                            time.sleep(1)
                             long = driver.find_element(
                                 "xpath",
                                 "//zi-text[contains(@data-automation-id,'profile-content-description')]//span",
@@ -723,7 +754,7 @@ def main():
                                 "xpath",
                                 "//span[contains(text(),'Technologies')]/parent::div/parent::div/parent::li",
                             ).click()
-                            random_sleep()
+                            time.sleep(1.4)
                             techs = driver.find_elements(
                                 "xpath", "//li[@role='option']"
                             )
@@ -796,8 +827,9 @@ def main():
 
                         print(f"Data has been appended to {csv_file_path}")
                         # Take 3-12 seconds between searches mimic a lazy human
-                        time.sleep(random.randint(3, 12))
+                        # time.sleep(random.randint(3, 12))
                     except Exception as e:
+                        pass
                         print(e)
                         
 
@@ -810,10 +842,15 @@ def main():
 
                     take_break()
                 try:
+                    driver.get(last_page_url)
+                    time.sleep(5)
                     driver.find_element(By.XPATH, '//button[@class="p-ripple p-element p-paginator-next p-paginator-element p-link"]').click()
                     random_sleep()
                     last_page_url = driver.current_url
                     update_last_page_url("settings_zoominfo.json",last_page_url)
+                    last_processed_page = page + 1
+                    update_last_processed_page("settings_zoominfo.json", last_processed_page)
+
                 except:
                     last_page_url = None
                     update_last_page_url("settings_zoominfo.json", last_page_url)
@@ -822,12 +859,16 @@ def main():
 
                     last_processed_person = -1
                     update_last_processed_person("settings_zoominfo.json", last_processed_person)
+                    print("break as next page not found")
                     break
-                last_processed_page = page + 1
-                update_last_processed_page("settings_zoominfo.json", last_processed_page)
+                # last_processed_page = page + 1
+                # update_last_processed_page("settings_zoominfo.json", last_processed_page)
 
                 last_processed_person = -1
                 update_last_processed_person("settings_zoominfo.json", last_processed_person)
+
+                last_processed_index = x + 1
+                update_last_processed_index("settings_zoominfo.json", last_processed_index)
 
                 if stop_code():
                     print("shift end!")
@@ -845,6 +886,7 @@ def main():
 
             try:
                 driver.get("https://app.zoominfo.com/#/apps/home-page")
+
             except Exception as e:
                 print("Error occurred while navigating to search page:", e)
                 driver.quit()
@@ -890,10 +932,11 @@ def start_code():
 # Function to check if it's time to stop the code
 def stop_code():
     global run_code,WEEKDAY
+    # return False
     current_time = datetime.now()
     WEEKDAY = is_weekday()
     if WEEKDAY == True:
-        if current_time.hour >= 4 and current_time.minute >= 55:
+        if current_time.hour >= 8 and current_time.minute >= 25:
             run_code = False
             return True
     else:
@@ -924,6 +967,7 @@ if __name__ == "__main__":
 
     while True:
         current_time = datetime.now().time()
+        # start_code()
         if is_weekday() == True:
             if datetime_time(20, 35) <= current_time:
                 if stop_code()==True:
@@ -931,7 +975,7 @@ if __name__ == "__main__":
                 print("Starting Code..")
                 start_code()
         else:
-            if datetime_time(14, 35) <= current_time:
+            if datetime_time(20, 35) <= current_time:
                 if stop_code()==True:
                     continue
                 print("Starting code...")

@@ -807,7 +807,7 @@ def stop_code():
             run_code = False
             return True
     else:
-        if current_time.hour >= 14 and current_time.minute >= 30:
+        if current_time.hour >= 20 and current_time.minute >= 30:
             run_code = False
             return True
 
@@ -839,7 +839,7 @@ if __name__ == "__main__":
                 print("Starting Code..")
                 start_code()
         else:
-            if datetime_time(8, 30) <= current_time < datetime_time(14, 30):
+            if datetime_time(5, 2) <= current_time < datetime_time(20, 30):
                 print("Starting code...")
                 start_code()
         time.sleep(1)
