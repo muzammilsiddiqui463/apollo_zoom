@@ -198,7 +198,7 @@ def main():
         print("Error occurred while reading csv file:", e)
         driver.quit()
         return
-    input()
+    # input()
     for x in range(last_processed_index, len(df)):
         try:
             wait.until(
