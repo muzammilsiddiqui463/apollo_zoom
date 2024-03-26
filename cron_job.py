@@ -835,7 +835,7 @@ if __name__ == "__main__":
     while True:
         current_time = datetime.now().time()
         if is_weekday() == True:
-            if datetime_time(5, 2) <= current_time < datetime_time(20, 30):
+            if datetime_time(0, 2) <= current_time < datetime_time(20, 30):
                 if stop_code() == True:
                     continue
                 print("Starting Code..")
