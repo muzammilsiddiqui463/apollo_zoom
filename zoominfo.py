@@ -116,7 +116,7 @@ def main():
     chrome_options = webdriver.ChromeOptions()
 
 
-    chrome_options.add_argument("--headless")
+    # chrome_options.add_argument("--headless")
     chrome_options.add_argument("--window-size=1920,1080")
     # Set up Chrome options
     driver = uc.Chrome(user_data_dir=os.getcwd()+"/zoominfo",options=chrome_options)
@@ -136,7 +136,10 @@ def main():
             input_username = driver.find_element(
                 By.XPATH, '//input[@id="okta-signin-username"]'
             )
+            input_username.click()
             input_username.clear()
+            input_username.send_keys(Keys.CONTROL+'a')
+            input_username.send_keys(Keys.BACKSPACE)
             for i in username:
                 input_username.send_keys(i)
                 time.sleep(random.uniform(0.2, 0.8))
