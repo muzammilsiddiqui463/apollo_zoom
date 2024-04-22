@@ -101,7 +101,7 @@ def main():
     # assign a common user agent
     my_user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36"
     chrome_options.add_argument(f"user-agent={my_user_agent}")
-    # chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--headless")
     chrome_options.add_argument("--window-size=1920,1080")
 
     # Create a new instance of ChromeDriver with the desired options
