@@ -39,7 +39,7 @@ if check_script_running "/root/apollo_zoom/apollo_boy1.py"; then
     echo "Apollo is already running"
 else
     echo "Starting Apollo Script"
-    start_script "apollo" "/root/apollo_zoom/apollo_boy1.py"
+    start_script "apollo1" "/root/apollo_zoom/apollo_boy1.py"
 fi
 
 # Check if the tmux session exists
@@ -55,7 +55,7 @@ if check_script_running "/root/apollo_zoom/apollo_boy2.py"; then
     echo "Apollo is already running"
 else
     echo "Starting Apollo Script"
-    start_script "apollo" "/root/apollo_zoom/apollo_boy2.py"
+    start_script "apollo2" "/root/apollo_zoom/apollo_boy2.py"
 fi
 
 # Check if the tmux session exists
@@ -71,7 +71,7 @@ if check_script_running "/root/apollo_zoom/apollo_boy3.py"; then
     echo "Apollo is already running"
 else
     echo "Starting Apollo Script"
-    start_script "apollo" "/root/apollo_zoom/apollo_boy3.py"
+    start_script "apollo3" "/root/apollo_zoom/apollo_boy3.py"
 fi
 
 # Check if the tmux session exists
@@ -87,5 +87,5 @@ if check_script_running "/root/apollo_zoom/apollo_main_driver.py"; then
     echo "Apollo Main Driver is already running"
 else
     echo "Starting Apollo Main Driver Script"
-    start_script "apollo" "/root/apollo_zoom/apollo_main_driver.py"
+    start_script "apollo_main" "/root/apollo_zoom/apollo_main_driver.py"
 fi
