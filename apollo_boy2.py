@@ -860,7 +860,7 @@ if __name__ == "__main__":
                 start_code()
         else:
             # if datetime_time(6, 30) <= current_time < datetime_time(12, 30):
-            if datetime_time(23, 1) <= current_time < datetime_time(1, 30):
+            if datetime_time(1, 1) <= current_time < datetime_time(2, 30):
 
                 if stop_code() == True:
                     continue
