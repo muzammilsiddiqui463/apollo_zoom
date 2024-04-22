@@ -852,7 +852,7 @@ if __name__ == "__main__":
         current_time = datetime.now().time()
         if is_weekday() == True:
             # if datetime_time(6, 30) <= current_time < datetime_time(15, 30):
-            if datetime_time(6, 30) <= current_time < datetime_time(15, 30):
+            if datetime_time(1, 1) <= current_time < datetime_time(2, 30):
 
                 if stop_code() == True:
                     continue
