@@ -23,7 +23,7 @@ check_script_running() {
 start_script() {
     session_name=$1
     script_name=$2
-    tmux send-keys -t "$session_name" "/root/scraping_tool/apollo_zoom/venv/bin/python3 $script_name" C-m
+    tmux send-keys -t "$session_name" "/root/apollo_zoom/venv/bin/python3 $script_name" C-m
 }
 
 # Check if the tmux session exists
@@ -35,11 +35,11 @@ else
 fi
 
 # Check and run script if session exists
-if check_script_running "/root/scraping_tool/apollo_zoom/apollo_boy1.py"; then
+if check_script_running "/root/apollo_zoom/apollo_boy1.py"; then
     echo "Apollo is already running"
 else
     echo "Starting Apollo Script"
-    start_script "apollo" "/root/scraping_tool/apollo_zoom/apollo_boy1.py"
+    start_script "apollo" "/root/apollo_zoom/apollo_boy1.py"
 fi
 
 # Check if the tmux session exists
@@ -51,11 +51,11 @@ else
 fi
 
 # Check and run script if session exists
-if check_script_running "/root/scraping_tool/apollo_zoom/apollo_boy2.py"; then
+if check_script_running "/root/apollo_zoom/apollo_boy2.py"; then
     echo "Apollo is already running"
 else
     echo "Starting Apollo Script"
-    start_script "apollo" "/root/scraping_tool/apollo_zoom/apollo_boy2.py"
+    start_script "apollo" "/root/apollo_zoom/apollo_boy2.py"
 fi
 
 # Check if the tmux session exists
@@ -67,11 +67,11 @@ else
 fi
 
 # Check and run script if session exists
-if check_script_running "/root/scraping_tool/apollo_zoom/apollo_boy3.py"; then
+if check_script_running "/root/apollo_zoom/apollo_boy3.py"; then
     echo "Apollo is already running"
 else
     echo "Starting Apollo Script"
-    start_script "apollo" "/root/scraping_tool/apollo_zoom/apollo_boy3.py"
+    start_script "apollo" "/root/apollo_zoom/apollo_boy3.py"
 fi
 
 # Check if the tmux session exists
@@ -83,9 +83,9 @@ else
 fi
 
 # Check and run script if session exists
-if check_script_running "/root/scraping_tool/apollo_zoom/apollo_main_driver.py"; then
+if check_script_running "/root/apollo_zoom/apollo_main_driver.py"; then
     echo "Apollo Main Driver is already running"
 else
     echo "Starting Apollo Main Driver Script"
-    start_script "apollo" "/root/scraping_tool/apollo_zoom/apollo_main_driver.py"
+    start_script "apollo" "/root/apollo_zoom/apollo_main_driver.py"
 fi
